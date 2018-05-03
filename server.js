@@ -1,8 +1,10 @@
-const http = require('http');
-const url  = require('url');
-const fs   = require('fs');
-const read = require('./read');
+const http = require('http'),
+ url  = require('url'),
+ fs   = require('fs'),
+ read = require('./read'),
+ express = require('express');
 
+var app = express();
 const host = '0.0.0.0';
 const port    = '9000';
 
@@ -25,28 +27,56 @@ let servingData = {};
 // Check for pathname as the key, and call the
 // function that mataches the route
 
-const handlers = [];
 
-handlers['/'] = (req, res) => {
+// Using Express we can use get('/') instead of handlers
+// const handlers = [];
+
+app.get('/', (req, res) => {
     
     res.statusCode = 200;
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(servingData.data)); 
-}
+    // with express we can use res.json
+    // res.setHeader('Content-Type', 'application/json');
+    // res.end(JSON.stringify(servingData.data)); 
+    res.json(servingData.data)
+});
 
+// let's use express path vars
+// app.get('/first', (req, res) => {
 
-handlers['/first'] = (req, res) => {
+app.get('/s/:index', (req, res) => {
+    let index = req.params.index;
     res.statusCode = 200;
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(servingData.data[0])); 
-}   
+    // with express we can use res.json
+    // res.setHeader('Content-Type', 'application/json');
+    // res.end(JSON.stringify(servingData.data[0])); 
+    
+    // parseInt(index)
+    // res.json(servingData.data[0])
+    res.json(servingData.data[parseInt(index)]);
+});  
   
-handlers['/second'] = (req, res) => {
+/************************  SEE ABOVE ************
+app.get('/second', (req, res) => {
     res.statusCode = 200;
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(servingData.data[1])); 
-}
+    // with express we can use res.json
+    // res.setHeader('Content-Type', 'application/json');
+    // res.end(JSON.stringify(servingData.data[1])); 
+    res.json(servingData.data[1])
+});
+************************************************/
 
+app.get('/about', (req, res) => {
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/plain');
+    res.send('Learning Node, express, and mongo!'); 
+});
+
+app.get('*', (req,res) => {
+    res.status(404);
+    res.send('Oops no goods!');
+});
+
+/**********  EXPRESS REMOVES THE NEED FOR THIS 
 const server  = http.createServer((req, res) => {
       
       var pathname = url.parse(req.url, true).pathname;
@@ -61,17 +91,14 @@ const server  = http.createServer((req, res) => {
           res.end("Not found!");
       }
       
-      /* if(pathname.indexOf('first') != -1) {
-      res.end(JSON.stringify(arrStations[0]));
-      } else {
-       res.end(JSON.stringify(arrStations)); 
-      } */
 });
+************************************************/
 
 let listen = new Promise(function(resolve, reject) {
     try {
-        
-      server.listen(port, host,  () => {
+      // with express replace server with app 
+      // server.listen(port, host,  () => {
+      app.listen(port, host,  () => {
         resolve(`Server running on http://${host}:${port}`);
        });   
        
@@ -108,6 +135,6 @@ async function start() {
 start().then((data) => console.log(data));
 
 module.exports = {
-    handlers: handlers,
+    // handlers: handlers,
     data: servingData.data
 };
