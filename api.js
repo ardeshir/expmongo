@@ -26,7 +26,7 @@ app.delete('/api/s/:index', (req, res) => {
 app.put('/api/s/:index', (req, res) => {
     let index = req.params.index;
     res.statusCode = 200;
-    servingData.data[parseInt(index)] = {id: index, dummy: 'data'};
+    servingData.data[parseInt(index)] = {id: 1, data: req.body};
     res.send(servingData.data[parseInt(index)]);
 });
   
@@ -35,8 +35,8 @@ app.put('/api/s/:index', (req, res) => {
 app.post('/api/', (req, res) => {
     let index = req.params.index;
     res.statusCode = 200;
-    servingData.data.push({id: servingData.length, dummy: 'data'});
-    res.send(servingData.data[servingData.length-1]);
+    servingData.data.push({id: servingData.data.length, data: req.body});
+    res.send(servingData.data[servingData.data.length-1]);
 }); 
 
  app.get('*', (req,res) => {

@@ -3,16 +3,25 @@ const http = require('http'),
  fs   = require('fs'),
  read = require('./read'),
  express = require('express'),
- api  = require('./api');
+ api  = require('./api'), 
+ bodyParser = require('body-parser');
 
 const host = '0.0.0.0';
 const port    = '9000';
+let servingData = {};
 
 var app = express();
 app.set('view engine', 'ejs');
 
-    
-let servingData = {};
+app.use(function(req, res, next) {
+   console.log('requested on path' + req.path);
+   next();
+});
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(bodyParser.json());
 
 app.get('/about', (req, res) => {
 
