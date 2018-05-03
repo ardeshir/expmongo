@@ -4,22 +4,12 @@ const http = require('http'),
  read = require('./read'),
  express = require('express');
 
-var app = express();
 const host = '0.0.0.0';
 const port    = '9000';
 
+var app = express();
+app.set('view engine', 'ejs');
 
-/* const arrStations = [
-    { id: '1',
-      where: 'london',
-      address: 'Tenth Avenue Notht',
-      type: 'electric charger'
-    },
-    { id: 2,
-      Where: 'new york',
-      address: 'Fifth Avenue South',
-      type: 'lectric charger' }
-    ]; */
     
 let servingData = {};
     
@@ -27,23 +17,20 @@ let servingData = {};
 // Check for pathname as the key, and call the
 // function that mataches the route
 
-
 // Using Express we can use get('/') instead of handlers
 // const handlers = [];
 
-app.get('/', (req, res) => {
+app.get('/api/', (req, res) => {
     
     res.statusCode = 200;
     // with express we can use res.json
-    // res.setHeader('Content-Type', 'application/json');
-    // res.end(JSON.stringify(servingData.data)); 
     res.json(servingData.data)
 });
 
 // let's use express path vars
 // app.get('/first', (req, res) => {
 
-app.get('/s/:index', (req, res) => {
+app.get('/api/s/:index', (req, res) => {
     let index = req.params.index;
     res.statusCode = 200;
     // with express we can use res.json
@@ -66,9 +53,20 @@ app.get('/second', (req, res) => {
 ************************************************/
 
 app.get('/about', (req, res) => {
-    res.statusCode = 200;
+    /* res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
-    res.send('Learning Node, express, and mongo!'); 
+    res.send('Learning Node, express, and mongo!'); */
+    res.render('about', {
+        title: "About Nodejs",
+        message: "It's so much fun learing"
+    })    
+});
+
+app.get('/', (req, res) => {
+    res.render('index', {
+        title: "Nodejs is awesome",
+        message: "Keep learning new technologies to stay ahead of the pack!"
+    })    
 });
 
 app.get('*', (req,res) => {
