@@ -39,6 +39,13 @@ app.post('/api/', (req, res) => {
     res.send(servingData.data[servingData.data.length-1]);
 }); 
 
+app.get('/api/error', (req, res) => {
+   setTimeout(() => {
+       req.abracadabra.crash = 'bleah';
+   }, 100)   
+    
+ });
+
  app.get('*', (req,res) => {
     res.status(404);
     res.send('Oops no goods!');
